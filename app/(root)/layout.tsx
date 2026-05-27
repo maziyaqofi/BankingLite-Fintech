@@ -1,4 +1,5 @@
 import Sidebar from "@/components/shared/Sidebar";
+import MobileNav from "@/components/shared/MobileNav";
 
 export default function RootLayout({
   children,
@@ -6,12 +7,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex">
+    <main className="flex min-h-screen bg-gray-50">
       <Sidebar />
 
-      <section className="flex-1 p-8 bg-gray-50 min-h-screen">
+      <section className="flex-1 p-4 pb-24 md:p-8">
         {children}
       </section>
+
+      <MobileNav />
     </main>
   );
 }

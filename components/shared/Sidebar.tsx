@@ -37,7 +37,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 min-h-screen border-r bg-white p-6">
+    <aside className="hidden min-h-screen w-64 border-r bg-white p-6 md:block">
       <h1 className="text-2xl font-bold mb-10">
         Fintech
       </h1>
