@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { account, ID } from "@/lib/appwrite";
+import { toast } from "sonner";
 
 const registerSchema = z
   .object({
@@ -45,14 +46,14 @@ export default function RegisterPage() {
         data.fullName
         );
 
-        alert("Register success!");
+        toast.success("Register success!");
 
         console.log(data);
 
     } catch (error) {
         console.error(error);
 
-        alert("Register failed!");
+        toast.error("Register failed!");
     }
   }
 

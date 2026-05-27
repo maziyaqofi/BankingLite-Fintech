@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { account } from "@/lib/appwrite";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
@@ -31,12 +32,11 @@ export default function LoginPage() {
         data.password
         );
 
-        alert("Login success!");
-
+        toast.success("Login success!");
         router.push("/dashboard");
     } catch (error) {
         console.error(error);
-        alert("Login failed!");
+        toast.error("Login failed!");
     }
 }
 

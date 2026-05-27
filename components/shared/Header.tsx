@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { account } from "@/lib/appwrite";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface User {
   name: string;
@@ -12,7 +13,6 @@ interface User {
 export default function Header() {
 
   const router = useRouter();
-
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Header() {
 
       await account.deleteSession("current");
 
-      alert("Logout success!");
+      toast.success("Logout success!");
 
       router.push("/login");
 
@@ -49,7 +49,7 @@ export default function Header() {
 
       console.error(error);
 
-      alert("Logout failed!");
+      toast.error("Logout failed!");
     }
   }
 

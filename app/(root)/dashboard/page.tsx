@@ -5,6 +5,7 @@ import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 
 export default function DashboardPage() {
+
   const totalBalance = bankAccounts.reduce(
     (total, bank) => total + bank.balance,
     0
@@ -22,14 +23,14 @@ export default function DashboardPage() {
     <div>
       <Header />
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <BalanceCard title="Total Balance" amount={`$${totalBalance}`} />
         <BalanceCard title="Income" amount={`$${totalIncome}`} />
         <BalanceCard title="Expenses" amount={`$${totalExpense}`} />
       </section>
 
       <RecentTransactions />
-      
+
       <div className="mt-8">
         <ExpenseChart />
       </div>
