@@ -2,8 +2,8 @@
 
 import Sidebar from "@/components/shared/Sidebar";
 import MobileNav from "@/components/shared/MobileNav";
-import useAuth from "@/hooks/useAuth";
 import Loader from "@/components/shared/Loader";
+import useAuth from "@/hooks/useAuth";
 
 export default function RootLayout({
   children,
@@ -13,7 +13,7 @@ export default function RootLayout({
   const { loading } = useAuth();
 
   if (loading) {
-  return <Loader />;
+    return <Loader />;
   }
 
   return (

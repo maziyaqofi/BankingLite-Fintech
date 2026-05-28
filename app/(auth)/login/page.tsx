@@ -7,6 +7,8 @@ import { z } from "zod";
 import { account } from "@/lib/appwrite";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import useGuest from "@/hooks/useGuest";
+import Loader from "@/components/shared/Loader";
 
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
@@ -24,6 +26,11 @@ export default function LoginPage() {
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
+
+    const { loading } = useGuest();
+    if (loading) {
+      return <Loader />;
+    }
 
     async function onSubmit(data: LoginFormData) {
     try {

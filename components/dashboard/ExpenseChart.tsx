@@ -15,17 +15,53 @@ ChartJS.register(
   Legend
 );
 
-export default function ExpenseChart() {
+interface Transaction {
+  $id: string;
+  title: string;
+  type: string;
+  amount: number;
+  recipient: string;
+  note?: string;
+  date: string;
+}
+
+interface ExpenseChartProps {
+  transactions: Transaction[];
+}
+
+export default function ExpenseChart({
+  transactions,
+}: ExpenseChartProps) {
+
+  const totalTransfer = transactions
+    .filter((trx) => trx.type === "transfer")
+    .reduce((total, trx) => total + trx.amount, 0);
+
+  const totalIncome = transactions
+    .filter((trx) => trx.type === "income")
+    .reduce((total, trx) => total + trx.amount, 0);
+
+  const totalExpense = transactions
+    .filter((trx) => trx.type === "expense")
+    .reduce((total, trx) => total + trx.amount, 0);
+
   const data = {
     labels: ["Income", "Expense", "Transfer"],
+
     datasets: [
       {
-        data: [8200, 350, 500],
+        data: [
+          totalIncome,
+          totalExpense,
+          totalTransfer,
+        ],
+
         backgroundColor: [
           "#16a34a",
           "#dc2626",
           "#2563eb",
         ],
+
         borderWidth: 0,
       },
     ],
@@ -33,13 +69,15 @@ export default function ExpenseChart() {
 
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
+
       <h2 className="mb-6 text-xl font-bold">
         Financial Analytics
       </h2>
 
-      <div className="max-w-xs mx-auto">
+      <div className="mx-auto max-w-xs">
         <Doughnut data={data} />
       </div>
+
     </div>
   );
 }

@@ -1,27 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { account } from "@/lib/appwrite";
 
-export default function useAuth() {
+export default function useGuest() {
+
   const router = useRouter();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkUser() {
+
+    async function checkSession() {
+
       try {
+
         await account.get();
+
+        router.replace("/dashboard");
+
       } catch (error) {
-        console.error(error);
-        router.replace("/login");
-        return;
+
+        console.log("Guest user");
+
       } finally {
+
         setLoading(false);
       }
     }
 
-    checkUser();
+    checkSession();
+
   }, [router]);
 
   return { loading };

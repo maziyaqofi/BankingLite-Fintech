@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { account, ID } from "@/lib/appwrite";
 import { toast } from "sonner";
+import useGuest from "@/hooks/useGuest";
+import Loader from "@/components/shared/Loader";
 
 const registerSchema = z
   .object({
@@ -36,6 +38,11 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  const { loading } = useGuest();
+  if (loading) {
+    return <Loader />;
+  }
 
   async function onSubmit(data: RegisterFormData) {
     try {

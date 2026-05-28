@@ -8,6 +8,7 @@ import {
   Landmark,
   ReceiptText,
   Send,
+  PlusCircle,
 } from "lucide-react";
 
 const links = [
@@ -30,6 +31,11 @@ const links = [
     label: "Transfer",
     href: "/transfer",
     icon: Send,
+  },
+  {
+    label: "Add Transaction",
+    href: "/add-transaction",
+    icon: PlusCircle,
   },
 ];
 

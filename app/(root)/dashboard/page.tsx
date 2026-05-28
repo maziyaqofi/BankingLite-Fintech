@@ -1,15 +1,63 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import Header from "@/components/shared/Header";
 import BalanceCard from "@/components/dashboard/BalanceCard";
-import { bankAccounts, transactions } from "@/constants/dummyData";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
+import { databases } from "@/lib/appwrite";
+import { account } from "@/lib/appwrite";
+import { Query } from "appwrite";
+
+interface Transaction {
+  $id: string;
+  title: string;
+  type: string;
+  amount: number;
+  recipient: string;
+  note?: string;
+  date: string;
+}
 
 export default function DashboardPage() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalBalance = bankAccounts.reduce(
-    (total, bank) => total + bank.balance,
-    0
-  );
+  useEffect(() => {
+    async function getTransactions() {
+      try {
+
+        const currentUser = await account.get();
+
+        const response = await databases.listDocuments(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
+          [
+            Query.equal("userId", currentUser.$id)
+          ]
+        );
+
+        setTransactions(
+          response.documents as unknown as Transaction[]
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+      } finally {
+
+        setLoading(false);
+      }
+    }
+
+    getTransactions();
+  }, []);
+
+  const totalTransfer = transactions
+    .filter((trx) => trx.type === "transfer")
+    .reduce((total, trx) => total + trx.amount, 0);
 
   const totalIncome = transactions
     .filter((trx) => trx.type === "income")
@@ -19,6 +67,12 @@ export default function DashboardPage() {
     .filter((trx) => trx.type === "expense")
     .reduce((total, trx) => total + trx.amount, 0);
 
+  const totalBalance = 10000 + totalIncome - totalExpense - totalTransfer;
+
+  if (loading) {
+    return <p>Loading dashboard...</p>;
+  }
+
   return (
     <div>
       <Header />
@@ -26,13 +80,13 @@ export default function DashboardPage() {
       <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <BalanceCard title="Total Balance" amount={`$${totalBalance}`} />
         <BalanceCard title="Income" amount={`$${totalIncome}`} />
-        <BalanceCard title="Expenses" amount={`$${totalExpense}`} />
+        <BalanceCard title="Expenses" amount={`$${totalExpense + totalTransfer}`} />
       </section>
 
-      <RecentTransactions />
+      <RecentTransactions transactions={transactions.slice(0, 5)} />
 
       <div className="mt-8">
-        <ExpenseChart />
+        <ExpenseChart transactions={transactions} />
       </div>
     </div>
   );

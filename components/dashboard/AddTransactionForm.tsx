@@ -1,101 +1,133 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { account, databases, ID } from "@/lib/appwrite";
+import { toast } from "sonner";
 
-export default function TransferForm() {
-  const [recipient, setRecipient] = useState("");
+export default function AddTransactionForm() {
+
+  const router = useRouter();
+
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("income");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-      const currentUser = await account.get();
 
-      await databases.createDocument(
+        const currentUser = await account.get();
+
+        await databases.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
         ID.unique(),
         {
-          userId: currentUser.$id,
-          title: `Transfer to ${recipient}`,
-          type: "transfer",
-          amount: Number(amount),
-          recipient,
-          note,
-          date: new Date().toISOString(),
+            userId: currentUser.$id,
+            title,
+            type,
+            amount: Number(amount),
+            recipient: "-",
+            note,
+            date: new Date().toISOString(),
         }
-      );
+        );
 
-      toast.success("Transfer success!");
+        toast.success("Transaction added!");
 
-      setRecipient("");
-      setAmount("");
-      setNote("");
+        router.push("/dashboard");
+        router.refresh();
 
     } catch (error) {
 
-      console.error(error);
+        console.error(error);
 
-      toast.error("Transfer failed!");
+        toast.error("Failed to add transaction!");
     }
-  }
+    }
 
   return (
     <form
       onSubmit={handleSubmit}
       className="max-w-xl rounded-2xl border bg-white p-6 shadow-sm"
     >
+
       <div className="mb-5">
+
         <label className="mb-2 block text-sm font-medium">
-          Recipient Email
+          Title
         </label>
+
         <input
-          type="email"
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-          placeholder="example@email.com"
+          type="text"
+          placeholder="Salary, Shopping, Food"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
           required
         />
+
       </div>
 
       <div className="mb-5">
+
+        <label className="mb-2 block text-sm font-medium">
+          Type
+        </label>
+
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+        >
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+
+      </div>
+
+      <div className="mb-5">
+
         <label className="mb-2 block text-sm font-medium">
           Amount
         </label>
+
         <input
           type="number"
+          placeholder="100"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="100"
           className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
           required
         />
+
       </div>
 
       <div className="mb-6">
+
         <label className="mb-2 block text-sm font-medium">
           Note
         </label>
+
         <textarea
+          placeholder="Optional note"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Payment note"
           className="min-h-28 w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
         />
+
       </div>
 
       <button
         type="submit"
         className="w-full rounded-xl bg-black px-4 py-3 font-semibold text-white hover:bg-gray-800"
       >
-        Send Money
+        Add Transaction
       </button>
+
     </form>
   );
 }
