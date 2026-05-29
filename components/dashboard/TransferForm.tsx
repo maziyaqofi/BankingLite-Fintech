@@ -1,16 +1,42 @@
 "use client";
 
-import { useState } from "react";
 import { toast } from "sonner";
 import { account, databases, ID } from "@/lib/appwrite";
 import { Query } from "appwrite";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BankAccount } from "@/types";
 
 export default function TransferForm() {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+  const [banks, setBanks] = useState<BankAccount[]>([]);
+  const [selectedBankId, setSelectedBankId] = useState("");
+
+  useEffect(() => {
+    async function getBanks() {
+      try {
+        const currentUser = await account.get();
+
+        const response = await databases.listDocuments(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+          [Query.equal("userId", currentUser.$id)]
+        );
+
+        const userBanks = response.documents as unknown as BankAccount[];
+
+        setBanks(userBanks);
+        setSelectedBankId(userBanks[0]?.$id || "");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getBanks();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -18,13 +44,9 @@ export default function TransferForm() {
     try {
       const currentUser = await account.get();
 
-      const senderBankResponse = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
-        [Query.equal("userId", currentUser.$id)]
+      const senderBank = banks.find(
+        (bank) => bank.$id === selectedBankId
       );
-
-      const senderBank = senderBankResponse.documents[0];
 
       if (!senderBank) {
         toast.error("Sender bank account not found!");
@@ -131,10 +153,31 @@ export default function TransferForm() {
       onSubmit={handleSubmit}
       className="max-w-xl rounded-2xl border bg-white p-6 shadow-sm"
     >
+
+      <div className="mb-5">
+        <label className="mb-2 block text-sm font-medium">
+          Source Bank Account
+        </label>
+
+        <select
+          value={selectedBankId}
+          onChange={(e) => setSelectedBankId(e.target.value)}
+          className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+          required
+        >
+          {banks.map((bank) => (
+            <option key={bank.$id} value={bank.$id}>
+              {bank.bankName} - {bank.accountNumber} - ${bank.balance}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="mb-5">
         <label className="mb-2 block text-sm font-medium">
           Recipient Account Number
         </label>
+        
         <input
           type="text"
           value={recipient}

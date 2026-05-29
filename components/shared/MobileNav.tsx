@@ -7,6 +7,7 @@ import {
   ReceiptText,
   Send,
   PlusCircle,
+  CreditCard,
 } from "lucide-react";
 
 const links = [
@@ -15,6 +16,7 @@ const links = [
   { label: "History", href: "/transactions", icon: ReceiptText },
   { label: "Transfer", href: "/transfer", icon: Send },
   { label: "Add", href: "/add-transaction", icon: PlusCircle },
+  { label: "Bank+", href: "/add-bank", icon: CreditCard, }
 ];
 
 export default function MobileNav() {

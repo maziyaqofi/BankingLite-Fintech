@@ -9,6 +9,7 @@ import {
   ReceiptText,
   Send,
   PlusCircle,
+  CreditCard,
 } from "lucide-react";
 
 const links = [
@@ -36,6 +37,12 @@ const links = [
     label: "Add Transaction",
     href: "/add-transaction",
     icon: PlusCircle,
+  },
+
+  {
+    label: "Add Bank",
+    href: "/add-bank",
+    icon: CreditCard,
   },
 ];
 

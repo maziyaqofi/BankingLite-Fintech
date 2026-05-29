@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Query } from "appwrite";
-
 import BankCard from "@/components/dashboard/BankCard";
 import { account, databases } from "@/lib/appwrite";
 
@@ -50,6 +49,7 @@ export default function MyBanksPage() {
         {banks.map((bank) => (
           <BankCard
             key={bank.$id}
+            ownerName={bank.ownerName}
             bankName={bank.bankName}
             accountNumber={bank.accountNumber}
             balance={bank.balance}
