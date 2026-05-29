@@ -1,36 +1,204 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💳 Fintech Banking Application
 
-## Getting Started
+A modern fintech banking simulation application built with Next.js, TypeScript, Tailwind CSS, and Appwrite. This project allows users to manage multiple bank accounts, track transactions, transfer funds between users, and generate downloadable transaction receipts in PDF format.
 
-First, run the development server:
+---
+
+## 🚀 Features
+
+### 🔐 Authentication
+
+* User Registration
+* User Login
+* User Logout
+* Protected Routes
+
+### 🏦 Bank Account Management
+
+* Create Multiple Bank Accounts
+* View Account Balances
+* Copy Account Numbers
+* Real-Time Balance Updates
+
+### 💸 Transaction Management
+
+* Add Income Transactions
+* Add Expense Transactions
+* Transaction Status Tracking
+
+  * Success
+  * Pending
+  * Failed
+* Search Transactions
+* Transaction History
+
+### 🔄 Fund Transfer
+
+* Transfer Money Between Users
+* Transfer Using Account Number
+* Multi-Bank Support
+* Insufficient Balance Validation
+
+### 📄 Receipt & Reports
+
+* Transaction Detail Page
+* Download Transaction Receipt as PDF
+* Export Full Transaction History as PDF
+
+### 📱 Responsive Design
+
+* Desktop Friendly
+* Mobile Responsive Layout
+* Mobile Transaction Cards
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Next.js 15
+* React
+* TypeScript
+* Tailwind CSS
+
+### Backend & Database
+
+* Appwrite
+
+### Additional Libraries
+
+* React Hook Form
+* Zod
+* Lucide React
+* Sonner
+* jsPDF
+
+---
+
+## 📂 Project Structure
+
+```bash
+app/
+├── dashboard/
+├── my-banks/
+├── transactions/
+├── transfer/
+├── add-transaction/
+├── add-bank/
+
+components/
+├── dashboard/
+├── shared/
+
+lib/
+├── appwrite.ts
+
+types/
+├── index.ts
+```
+
+---
+
+## 📸 Screenshots
+
+### Dashboard
+
+Add dashboard screenshot here.
+
+### My Banks
+
+Add bank account screenshot here.
+
+### Transaction History
+
+Add transaction history screenshot here.
+
+### Transfer Funds
+
+Add transfer screenshot here.
+
+### Transaction Receipt
+
+Add receipt screenshot here.
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/maziyaqofi/BankingLite-Fintech
+```
+
+Navigate to project folder:
+
+```bash
+cd your-repository
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create environment variables:
+
+```env
+NEXT_PUBLIC_APPWRITE_ENDPOINT=
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=
+
+NEXT_PUBLIC_APPWRITE_DATABASE_ID=
+
+NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID=
+NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID=
+```
+
+Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🎯 Learning Outcomes
 
-To learn more about Next.js, take a look at the following resources:
+This project was built to practice and demonstrate:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Authentication & Authorization
+* Database Design
+* Multi-User Systems
+* Financial Transaction Logic
+* State Management
+* PDF Generation
+* Responsive Web Development
+* Full-Stack Application Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔮 Future Improvements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Transaction Notifications
+* Dark Mode
+* User Profile Management
+* Monthly Financial Analytics
+* Advanced Transaction Filters
+* Download Bank Statements
+* Email Verification
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 👨‍💻 Author
+
+**Maziya Ats Tsaqofi**
+Computer Science Student | Software Developer | AI Tech Enthusiasts
+Date: 29 May 2026
