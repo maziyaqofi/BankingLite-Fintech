@@ -135,7 +135,7 @@ git clone https://github.com/maziyaqofi/BankingLite-Fintech
 Navigate to project folder:
 
 ```bash
-cd your-repository
+cd banking_lite
 ```
 
 Install dependencies:
