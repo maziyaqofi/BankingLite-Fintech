@@ -3,10 +3,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { account, ID } from "@/lib/appwrite";
 import { toast } from "sonner";
 import useGuest from "@/hooks/useGuest";
 import Loader from "@/components/shared/Loader";
+import { account, ID } from "@/lib/appwrite";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z
   .object({
@@ -28,13 +29,30 @@ const registerSchema = z
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+function getRegisterErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    const appwriteError = error as Error & {
+      code?: number;
+    };
+
+    if (appwriteError.code === 429) {
+      return "Terlalu banyak percobaan register. Tunggu beberapa menit, lalu coba lagi.";
+    }
+
+    return error.message;
+  }
+
+  return "Register failed!";
+}
+
 export default function RegisterPage() {
+  const router = useRouter();
   const {
     register,
 
     handleSubmit,
 
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
@@ -46,21 +64,19 @@ export default function RegisterPage() {
 
   async function onSubmit(data: RegisterFormData) {
     try {
-        await account.create(
+      await account.create(
         ID.unique(),
         data.email,
         data.password,
         data.fullName
-        );
+      );
 
-        toast.success("Register success!");
+      toast.success("Register success!");
 
-        console.log(data);
-
+      router.push("/login");
     } catch (error) {
-        console.error(error);
-
-        toast.error("Register failed!");
+      console.error("Register failed:", error);
+      toast.error(getRegisterErrorMessage(error));
     }
   }
 
@@ -156,9 +172,10 @@ export default function RegisterPage() {
 
         <button
           type="submit"
+          disabled={isSubmitting}
           className="w-full rounded-xl bg-black py-3 font-semibold text-white hover:bg-gray-800"
         >
-          Register
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
       </form>
 

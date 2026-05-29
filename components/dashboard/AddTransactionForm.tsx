@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { account, databases, ID } from "@/lib/appwrite";
 import { toast } from "sonner";
+import { Query } from "appwrite";
 
 export default function AddTransactionForm() {
 
@@ -21,6 +22,24 @@ export default function AddTransactionForm() {
 
         const currentUser = await account.get();
 
+        const bankResponse = await databases.listDocuments(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+          [Query.equal("userId", currentUser.$id)]
+        );
+
+        const bank = bankResponse.documents[0];
+
+        const newBalance =
+          type === "income"
+            ? bank.balance + Number(amount)
+            : bank.balance - Number(amount);
+          
+          if (newBalance < 0) {
+            toast.error("Insufficient balance!");
+            return;
+          }
+
         await databases.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
@@ -34,6 +53,15 @@ export default function AddTransactionForm() {
             note,
             date: new Date().toISOString(),
         }
+        );
+
+        await databases.updateDocument(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+          bank.$id,
+          {
+            balance: newBalance,
+          }
         );
 
         toast.success("Transaction added!");

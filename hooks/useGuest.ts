@@ -22,7 +22,7 @@ export default function useGuest() {
 
         router.replace("/dashboard");
 
-      } catch (error) {
+      } catch {
 
         console.log("Guest user");
 

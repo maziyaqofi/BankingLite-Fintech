@@ -15,15 +15,7 @@ ChartJS.register(
   Legend
 );
 
-interface Transaction {
-  $id: string;
-  title: string;
-  type: string;
-  amount: number;
-  recipient: string;
-  note?: string;
-  date: string;
-}
+import { Transaction } from "@/types";
 
 interface ExpenseChartProps {
   transactions: Transaction[];

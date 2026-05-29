@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { account, databases, ID } from "@/lib/appwrite";
+import { Query } from "appwrite";
+import { useRouter } from "next/navigation";
 
 export default function TransferForm() {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -16,16 +18,95 @@ export default function TransferForm() {
     try {
       const currentUser = await account.get();
 
+      const senderBankResponse = await databases.listDocuments(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+        [Query.equal("userId", currentUser.$id)]
+      );
+
+      const senderBank = senderBankResponse.documents[0];
+
+      if (!senderBank) {
+        toast.error("Sender bank account not found!");
+        return;
+      }
+
+      const recipientBankResponse = await databases.listDocuments(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+        [Query.equal("accountNumber", recipient)]
+      );
+
+      const recipientBank = recipientBankResponse.documents[0];
+
+      if (!recipientBank) {
+        toast.error("Recipient account not found!");
+        return;
+      }
+
+      if (recipientBank.userId === currentUser.$id) {
+        toast.error("You cannot transfer to your own account!");
+        return;
+      }
+
+      const transferAmount = Number(amount);
+
+      if (transferAmount <= 0) {
+        toast.error("Amount must be greater than 0!");
+        return;
+      }
+
+      if (senderBank.balance < transferAmount) {
+        toast.error("Insufficient balance!");
+        return;
+      }
+
+      const senderNewBalance = senderBank.balance - transferAmount;
+      const recipientNewBalance = recipientBank.balance + transferAmount;
+
+      await databases.updateDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+        senderBank.$id,
+        {
+          balance: senderNewBalance,
+        }
+      );
+
+      await databases.updateDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+        recipientBank.$id,
+        {
+          balance: recipientNewBalance,
+        }
+      );
+
       await databases.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
         ID.unique(),
         {
           userId: currentUser.$id,
-          title: `Transfer to ${recipient}`,
+          title: `Transfer to ${recipientBank.ownerName || recipientBank.accountNumber}`,
           type: "transfer",
-          amount: Number(amount),
-          recipient,
+          amount: transferAmount,
+          recipient: recipientBank.accountNumber,
+          note,
+          date: new Date().toISOString(),
+        }
+      );
+
+      await databases.createDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
+        ID.unique(),
+        {
+          userId: recipientBank.userId,
+          title: `Transfer from ${senderBank.ownerName || senderBank.accountNumber}`,
+          type: "income",
+          amount: transferAmount,
+          recipient: senderBank.accountNumber,
           note,
           date: new Date().toISOString(),
         }
@@ -37,10 +118,10 @@ export default function TransferForm() {
       setAmount("");
       setNote("");
 
+      router.push("/dashboard");
+      router.refresh();
     } catch (error) {
-
       console.error(error);
-
       toast.error("Transfer failed!");
     }
   }
@@ -52,13 +133,13 @@ export default function TransferForm() {
     >
       <div className="mb-5">
         <label className="mb-2 block text-sm font-medium">
-          Recipient Email
+          Recipient Account Number
         </label>
         <input
-          type="email"
+          type="text"
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
-          placeholder="example@email.com"
+          placeholder="enter recipient account number"
           className="w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-black"
           required
         />

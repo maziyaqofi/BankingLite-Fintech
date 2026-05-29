@@ -10,44 +10,39 @@ import { databases } from "@/lib/appwrite";
 import { account } from "@/lib/appwrite";
 import { Query } from "appwrite";
 
-interface Transaction {
-  $id: string;
-  title: string;
-  type: string;
-  amount: number;
-  recipient: string;
-  note?: string;
-  date: string;
-}
+import { Transaction, BankAccount } from "@/types";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [banks, setBanks] = useState<BankAccount[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getTransactions() {
       try {
-
         const currentUser = await account.get();
 
         const response = await databases.listDocuments(
           process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
           process.env.NEXT_PUBLIC_APPWRITE_TRANSACTIONS_TABLE_ID!,
           [
-            Query.equal("userId", currentUser.$id)
+            Query.equal("userId", currentUser.$id),
+            Query.orderDesc("date"),
+            Query.limit(5),
           ]
         );
 
-        setTransactions(
-          response.documents as unknown as Transaction[]
+        const bankResponse = await databases.listDocuments(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_BANK_ACCOUNTS_TABLE_ID!,
+          [Query.equal("userId", currentUser.$id)]
         );
 
+        setTransactions(response.documents as unknown as Transaction[]);
+        setBanks(bankResponse.documents as unknown as BankAccount[]);
       } catch (error) {
-
         console.error(error);
-
       } finally {
-
         setLoading(false);
       }
     }
@@ -67,7 +62,10 @@ export default function DashboardPage() {
     .filter((trx) => trx.type === "expense")
     .reduce((total, trx) => total + trx.amount, 0);
 
-  const totalBalance = 10000 + totalIncome - totalExpense - totalTransfer;
+  const totalBalance = banks.reduce(
+    (total, bank) => total + bank.balance,
+    0
+  );
 
   if (loading) {
     return <p>Loading dashboard...</p>;
