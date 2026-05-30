@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import GetStartedButton from "@/components/shared/GetStartedButton";
 
 export default function Home() {
   return (
@@ -7,9 +7,7 @@ export default function Home() {
         Fintech Bank Lite
       </h1>
 
-      <Button>
-        Get Started
-      </Button>
+      <GetStartedButton />
     </main>
   );
 }
