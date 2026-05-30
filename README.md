@@ -120,7 +120,7 @@ types/
 
 ### Receipt
 
-![Receipt](./assets/screenshoot/receipt.png)
+![Receipt]<img src="./assets/screenshots/my-banks.png" width="400"/>
 
 ---
 
