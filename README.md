@@ -120,7 +120,7 @@ types/
 
 ### Receipt
 
-<img src="./assets/screenshots/receipt.png" width="400"/>
+<img src="./assets/screenshoot/receipt.png" width="400"/>
 
 ---
 
