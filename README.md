@@ -102,23 +102,21 @@ types/
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
 ### Dashboard
 
-![Dashboard](./assets/screenshots/dashboard.png)
+![Dashboard](./assets/screenshoots/dashboard.png)
 
 ### My Banks
 
-![My Banks](./assets/screenshots/my-banks.png)
+![My Banks](./assets/screenshoots/my-banks.png)
 
 ### Transfer
 
-![Transfer](./assets/screenshots/transfer.png)
+![Transfer](./assets/screenshoots/transfer.png)
 
 ### Transaction History
 
-![Transactions](./assets/screenshots/transactions.png)
+![Transactions](./assets/screenshoots/transactions.png)
 
 ### Receipt
 
