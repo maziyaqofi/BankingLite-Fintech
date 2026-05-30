@@ -102,25 +102,27 @@ types/
 
 ## 📸 Screenshots
 
+## 📸 Screenshots
+
 ### Dashboard
 
-Add dashboard screenshot here.
+![Dashboard](./assets/screenshots/dashboard.png)
 
 ### My Banks
 
-Add bank account screenshot here.
+![My Banks](./assets/screenshots/my-banks.png)
+
+### Transfer
+
+![Transfer](./assets/screenshots/transfer.png)
 
 ### Transaction History
 
-Add transaction history screenshot here.
+![Transactions](./assets/screenshots/transactions.png)
 
-### Transfer Funds
+### Receipt
 
-Add transfer screenshot here.
-
-### Transaction Receipt
-
-Add receipt screenshot here.
+![Receipt](./assets/screenshots/receipt.png)
 
 ---
 
